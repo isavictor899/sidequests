@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Delete - Advanced Deletion Tool</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .info-code {
+            background-color: rgba(0,0,0,0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            color: #f87171; /* red-400 */
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white flex items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-4xl mx-auto">
+        <div class="glass-effect rounded-2xl p-8 shadow-2xl">
+            <div class="text-center mb-6">
+                <h1 class="text-4xl font-bold text-red-500">Super Delete</h1>
+                <p class="text-gray-300 mt-2">Forcefully delete files or folders that are protected or in use.</p>
+            </div>
+
+            <div class="bg-red-900 border-l-4 border-red-500 text-red-100 p-4 rounded-lg mb-6" role="alert">
+                <p class="font-bold">DANGER: EXTREME CAUTION ADVISED</p>
+                <p>This tool can delete critical system files. Deleting the wrong file or folder can cause <strong class="underline">irreversible damage</strong> to your Windows installation. Killing the wrong process can cause system instability. Double-check everything before proceeding. You are using this tool at your own risk.</p>
+            </div>
+
+            <div class="mb-4">
+                <label for="path" class="block text-sm font-medium text-gray-300 mb-2">File or Folder Path to Delete:</label>
+                <input type="text" id="path" class="w-full bg-gray-800 border border-gray-600 text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="e.g., C:\Users\YourUser\Desktop\StubbornFolder">
+            </div>
+
+            <button id="deleteBtn" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300 ease-in-out transform hover:scale-105">
+                Generate Deletion Script
+            </button>
+
+            <div id="status" class="mt-6 text-center text-gray-400"></div>
+
+            <div class="mt-8 pt-6 border-t border-gray-700 grid md:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold text-center mb-4">How it Works</h3>
+                    <p class="text-sm text-gray-400 text-center mb-4">
+                        This tool generates a batch script (`.bat`) to take control of and delete a target.
+                    </p>
+                    <ol class="list-decimal list-inside text-sm text-gray-400 mt-4 space-y-2 text-left w-fit mx-auto">
+                        <li><code class="bg-gray-800 p-1 rounded">TAKEOWN</code>: Takes ownership of the file/folder.</li>
+                        <li><code class="bg-gray-800 p-1 rounded">ICACLS</code>: Grants you full control permissions.</li>
+                        <li><code class="bg-gray-800 p-1 rounded">DEL / RD</code>: Deletes the file or removes the directory.</li>
+                    </ol>
+                </div>
+                <div class="bg-gray-800 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold text-center mb-4 text-yellow-400">Troubleshooting: "File in Use"</h3>
+                     <p class="text-sm text-gray-400 text-center mb-4">
+                        If the script fails, the file is likely locked by a running program. Follow these steps to find and stop the process:
+                    </p>
+                    <ol class="list-decimal list-inside text-sm text-gray-300 mt-4 space-y-3">
+                        <li>Press <code class="info-code">Win + R</code>, type <code class="info-code">resmon.exe</code>, and press Enter.</li>
+                        <li>In Resource Monitor, click the <strong class="text-white">CPU</strong> tab.</li>
+                        <li>In the <strong class="text-white">Associated Handles</strong> section, paste your file path into the search box.</li>
+                        <li>The program locking the file will appear. Note its name (e.g., <code class="info-code">program.exe</code>).</li>
+                        <li><strong class="text-yellow-400">Carefully</strong> right-click the program name and select <strong class="text-white">End Process</strong>.</li>
+                        <li>Run the generated <code class="info-code">.bat</code> script again.</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('deleteBtn').addEventListener('click', function() {
+            const path = document.getElementById('path').value.trim();
+            const status = document.getElementById('status');
+
+            if (!path) {
+                status.textContent = 'Please enter a file or folder path.';
+                status.style.color = '#f87171'; // text-red-400
+                return;
+            }
+
+            // A simple check to prevent accidental deletion of system root
+            const lowerCasePath = path.toLowerCase();
+            const protectedPaths = ['c:\\', 'c:', 'c:\\windows', 'c:\\windows\\system32'];
+            if (protectedPaths.includes(lowerCasePath) || lowerCasePath.startsWith('c:\\windows\\system32\\')) {
+                 status.innerHTML = '<strong class="text-red-500">CRITICAL SYSTEM FOLDER DETECTED.</strong><br>Deletion of this folder is blocked for your safety.';
+                 return;
+            }
+
+            // Batch script content
+            const batchContent = `@echo off
+:: Batch file generated by Super Delete Tool
+setlocal
+
+echo ============================================================================
+echo                     SUPER DELETE - FORCE DELETION SCRIPT
+echo ============================================================================
+echo.
+echo WARNING: This script will attempt to forcefully delete the following item:
+echo "${path}"
+echo.
+echo This action is IRREVERSIBLE and may cause system instability if the
+echo target is a critical file.
+echo.
+echo Make sure you have closed any programs that might be using this file.
+pause
+
+echo.
+echo [+] Taking ownership of the target...
+takeown /F "${path}" /R /D Y
+
+echo.
+echo [+] Granting 'Administrators' group full control permissions...
+icacls "${path}" /grant administrators:F /T
+
+echo.
+echo [+] Attempting to delete...
+rem Attempt to delete as a file first, suppress errors if it's a folder
+del /F /Q "${path}" 2>nul
+rem Attempt to delete as a directory, suppress errors if it's a file
+rd /S /Q "${path}" 2>nul
+
+echo.
+echo [+] Verifying deletion...
+IF EXIST "${path}" (
+    echo.
+    echo [!] FAILED: The file or folder could not be deleted.
+    echo.
+    echo     This usually means the file is still open in another program.
+    echo     Please use the 'Troubleshooting' guide on the web page to find
+    echo     and end the process that is locking the file.
+    echo.
+    echo     1. Open Resource Monitor (resmon.exe).
+    echo     2. Go to the CPU tab -> Associated Handles.
+    echo     3. Search for the path to find the locking program.
+    echo     4. End the process and run this script again.
+) ELSE (
+    echo.
+    echo [✓] SUCCESS: The file or folder has been permanently deleted.
+)
+
+echo.
+echo ============================================================================
+echo                              Operation Complete
+echo ============================================================================
+echo.
+pause
+endlocal
+`;
+
+            // Create a blob from the content
+            const blob = new Blob([batchContent], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+
+            // Create a temporary link to trigger the download
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'super_delete.bat';
+            document.body.appendChild(a);
+            a.click();
+
+            // Clean up
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            status.innerHTML = `
+                <p class="text-green-400 font-semibold">Batch file 'super_delete.bat' has been generated!</p>
+                <p class="mt-2">
+                    1. Save the file to your computer. <br>
+                    2. Right-click on <strong class="text-white">'super_delete.bat'</strong>. <br>
+                    3. Click <strong class="text-white">"Run as administrator"</strong>.
+                </p>
+            `;
+        });
+    </script>
+</body>
+</html>
