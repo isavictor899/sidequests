@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Natugrow Biosciences | Sustainable Farming Solutions</title>
+    
+    <!-- Google Fonts: Montserrat (Matching the clean aesthetic) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Montserrat', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#4CAF50', // Nature Green
+                        secondary: '#2E7D32', // Darker Green
+                        dark: '#1a1a1a',
+                        light: '#f9f9f9'
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Preload hero background to prioritize rendering above-the-fold -->
+
+    <style>
+        /* Critical styles only (minimized to reduce render-blocking CSS) */
+        .hero-bg{background-image:linear-gradient(rgba(0,0,0,.5),rgba(0,0,0,.5)),url('https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&q=85');background-size:cover;background-position:center;background-attachment:fixed;min-height:100vh;padding-top:5rem}
+        .about-bg{background-image:linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),url('https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&q=85');background-size:cover;background-position:center;background-attachment:fixed}
+        @media (max-width:768px){.about-bg{background-attachment:scroll}}
+        .btn-hover{transition:all .3s ease}.btn-hover:hover{transform:translateY(-2px);box-shadow:0 4px 6px rgba(0,0,0,.1)}
+        #mobile-menu{transition:max-height .3s ease-in-out;max-height:0;overflow:hidden}#mobile-menu.active{max-height:400px}
+     
+        /* Define the primary color for custom components */
+        :root {
+            --color-primary: #4CAF50; 
+        }
+
+        /* Custom CSS for the CSS-only Carousel structure */
+        .carousel {
+            position: relative;
+            overflow: hidden;
+            padding-bottom: 3rem; /* Space for navigation dots */
+            max-width: 1200px; 
+            margin: 0 auto;
+        }
+
+        .carousel__viewport {
+            display: flex;
+            overflow-x: scroll;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 20px;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+        /* Hide scrollbar for aesthetics */
+        .carousel__viewport::-webkit-scrollbar {
+            display: none;
+        }
+        .carousel__viewport {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+
+        .carousel__slide {
+            /* Default: Mobile (1 card) */
+            flex: 0 0 100%;
+            scroll-snap-align: start; /* Snap to the start for better horizontal list feel */
+            position: relative;
+            list-style: none;
+            padding: 0 1rem;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        /* Responsive slide widths (Horizontal List View) */
+        @media (min-width: 640px) {
+            .carousel__slide {
+                flex: 0 0 50%; /* Tablet (2 cards visible) */
+            }
+        }
+        @media (min-width: 1024px) {
+            .carousel__slide {
+                flex: 0 0 33.333%; /* Desktop (3 cards visible) */
+            }
+        }
+
+        /* External Navigation Arrows (Controls) */
+        .carousel__control {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            background-color: rgba(76, 175, 80, 0.8); /* Primary color with transparency */
+            color: white;
+            border-radius: 50%;
+            text-decoration: none;
+            z-index: 10;
+            transition: background-color 0.3s, opacity 0.3s;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: none; /* Hidden by default */
+        }
+
+        @media (min-width: 768px) {
+            .carousel__control {
+                display: flex; /* Show controls on tablet and desktop */
+            }
+        }
+
+        .carousel__control:hover {
+            background-color: var(--color-primary); 
+            opacity: 1;
+        }
+
+        .carousel__prev {
+            left: 1rem;
+        }
+
+        .carousel__next {
+            right: 1rem;
+        }
+
+        /* Navigation dots container (Keep for visual feedback on scroll position) */
+        .carousel__navigation {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .carousel__navigation-list {
+            display: flex;
+            padding: 0;
+            margin: 0;
+        }
+
+        .carousel__navigation-item {
+            list-style: none;
+            margin: 0 0.5rem;
+        }
+
+        .carousel__navigation-button {
+            display: block;
+            width: 12px;
+            height: 12px;
+            background-color: #d1d5db;
+            border-radius: 50%;
+            transition: background-color 0.3s;
+            text-indent: -9999px;
+            outline: none;
+        }
+
+        /* Highlight dot for the active slide (using :target for anchor-based carousel) */
+        .carousel__slide:nth-child(1):target ~ .carousel__navigation .carousel__navigation-list li:nth-child(1) .carousel__navigation-button,
+        .carousel__slide:nth-child(2):target ~ .carousel__navigation .carousel__navigation-list li:nth-child(2) .carousel__navigation-button,
+        .carousel__slide:nth-child(3):target ~ .carousel__navigation .carousel__navigation-list li:nth-child(3) .carousel__navigation-button,
+        .carousel__slide:nth-child(4):target ~ .carousel__navigation .carousel__navigation-list li:nth-child(4) .carousel__navigation-button,
+        .carousel__slide:nth-child(5):target ~ .carousel__navigation .carousel__navigation-list li:nth-child(5) .carousel__navigation-button,
+        .carousel__slide:nth-child(6):target ~ .carousel__navigation .carousel__navigation-list li:nth-child(6) .carousel__navigation-button {
+            background-color: var(--color-primary); 
+        }
+
+        /* Styling for the product card inside the slide */
+        .product-card {
+            width: 100%;
+        }
+
+        /* --- Existing site CSS from original file snippet --- */
+        /* Hiding scrollbar for smooth scroll */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4CAF50;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #E8F5E9;
+        }
+
+        .header-scrolled {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Modal Styles - ADDED FOR FUNCTIONALITY */
+        .full-screen-modal {
+            /* Hidden by default */
+            display: none; 
+            background-color: rgba(0, 0, 0, 0.7);
+            overflow-y: auto; /* Allow scrolling inside the modal */
+        }
+        
+        /* Show modal when 'active' class is present */
+        .full-screen-modal.active {
+            display: flex;
+        }
+        
+        .modal-content-animated {
+            transform: scale(0.9);
+            opacity: 0;
+            transition: all 0.3s ease-out;
+            margin: auto; /* Center the modal content vertically and horizontally */
+        }
+        
+        .full-screen-modal.active .modal-content-animated {
+            transform: scale(1);
+            opacity: 1;
+        }
+    </style>
+
+    <!-- Load non-critical styles asynchronously to reduce unused CSS impact -->
+    <link rel="preload" href="assets/css/noncritical.css" as="style" onload="this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="assets/css/noncritical.css"></noscript>
+</head>
+<body class="font-sans text-gray-800 antialiased">
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <!-- Logo -->
+                 <img id="siteLogo" src="assets/img/logo.png" alt="Site logo" style="height:130px">
+               
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="#home" class="text-gray-600 hover:text-primary font-medium transition">Home</a>
+                    <a href="#products" class="text-gray-600 hover:text-primary font-medium transition">Products</a>
+                    <a href="#services" class="text-gray-600 hover:text-primary font-medium transition">Services</a>
+                    <a href="#about" class="text-gray-600 hover:text-primary font-medium transition">About Us</a>
+                    <button onclick="openInquiryModal()" class="px-5 py-2 bg-primary text-white rounded-full hover:bg-secondary transition shadow-sm btn-hover">Inquire Now</button>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-gray-600 hover:text-primary focus:outline-none">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Panel -->
+        <div id="mobile-menu" class="md:hidden bg-white border-t">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 text-center">
+                <a href="#home" class="block px-3 py-2 text-gray-600 hover:text-primary hover:bg-gray-50 rounded-md">Home</a>
+                <a href="#products" class="block px-3 py-2 text-gray-600 hover:text-primary hover:bg-gray-50 rounded-md">Products</a>
+                <a href="#services" class="block px-3 py-2 text-gray-600 hover:text-primary hover:bg-gray-50 rounded-md">Services</a>
+                <a href="#about" class="block px-3 py-2 text-gray-600 hover:text-primary hover:bg-gray-50 rounded-md">About Us</a>
+                <button onclick="openInquiryModal()" class="w-full px-3 py-2 text-primary font-bold hover:bg-gray-50 rounded-md">Inquire Now</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="home" class="hero-bg flex items-center justify-center min-h-screen">
+        <div class="max-w-4xl mx-auto px-4 text-center text-white">
+            
+            <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 leading-snug drop-shadow-lg">
+                Discover Sustainable Solutions for Your Farming Needs
+            </h1>
+            <p class="text-lg md:text-xl mb-10 text-gray-100 font-light drop-shadow-md">
+                Join us in promoting eco-friendly agricultural practices for farmers of all sizes.
+            </p>
+            
+            <!-- Replaced Inline Form with a Hollow Outline Button (Hero) -->
+            <button onclick="openInquiryModal()" class="px-10 py-4 bg-transparent border-2 border-primary text-white font-bold rounded-full hover:bg-primary hover:text-white transition btn-hover uppercase tracking-wider text-lg">
+                Inquire Now
+            </button>
+        </div>
+    </header>
+
+    <!-- Services / Features Section -->
+    <section id="services" class="py-20 bg-light">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Items stack vertically on mobile (grid-cols-1) -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <!-- Feature 1 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition duration-300 group">
+                    <div class="h-48 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1593463897552-69da7e8343eb?w=600&q=75&auto=format&fit=crop" alt="Innovative Products" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" decoding="async" fetchpriority="high" width="600" height="400">
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-2xl font-bold mb-4 text-gray-800">Biological Crop Protection</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                        We offer biologically derived products (Biopesticides, Biofungicides, Bionematicides) that reduce the need for synthetic chemicals while effectively managing pests and diseases.</p>
+                    </div>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition duration-300 group">
+                    <div class="h-48 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1726413280663-1b048191e88e?w=400&q=55&auto=format&fit=crop" alt="Affordable Solutions" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" decoding="async" fetchpriority="high" width="600" height="400">
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-2xl font-bold mb-4 text-gray-800">Integrated Nutrient Management</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                        We deliver biologicals and digital tools that complement or replace synthetic fertilizers, including Biofertilizers (N-fixing, P-solubilizing) and site-specific nutrient recommendations.</p>
+                    </div>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition duration-300 group">
+                    <div class="h-48 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Biostimulants & Plant Health Enhancers" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" decoding="async" fetchpriority="high" width="600" height="400">
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-2xl font-bold mb-4 text-gray-800">Biostimulants & Plant Health Enhancers</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                  We provide products that actively improve plant vigor, increase stress tolerance, and boost nutrient use efficiency. </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="products" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Explore Our Products</h2>
+            <div class="w-20 h-1 bg-primary mx-auto mb-6"></div>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto mb-16">
+                Discover a wide range of sustainable agrochemical solutions designed for all your farming needs.
+            </p>
+
+            <!-- Items stack vertically on mobile (grid-cols-1) -->
+                       <!-- CAROUSEL START -->
+                <section class="carousel" aria-label="Product Gallery">
+                    
+                    <!-- External Navigation Controls (Visible Arrows) -->
+                    <a href="#carousel__slide1" class="carousel__control carousel__prev" aria-label="Go to the first slide">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                        </svg>
+                    </a>
+                    
+                    <a href="#carousel__slide6" class="carousel__control carousel__next" aria-label="Go to the last slide">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                        </svg>
+                    </a>
+
+                    <ol class="carousel__viewport">
+
+                        <!-- SLIDE 1: Water Retention Agent -->
+                 <li id="carousel__slide1" tabindex="0" class="carousel__slide">
+    <div class="product-card border border-gray-200 rounded-xl p-6 shadow-xl hover:shadow-2xl transition bg-white text-left h-full flex flex-col">
+        
+        <div class="aspect-square bg-gray-100 mb-4 rounded-lg overflow-hidden flex items-center justify-center p-8">
+            <i class="fa-solid fa-droplet text-7xl text-[#6A1B9A]"></i> 
+        </div>
+        
+        <h3 class="text-2xl font-extrabold mb-2 text-[#6A1B9A] tracking-wide">Water Retention Agent</h3>
+        <p class="text-gray-700 leading-relaxed text-md flex-grow">
+            Our WRA is a revolutionary soil additive that acts as a micro-reservoir, absorbing and storing water up to hundreds of times its weight. It significantly improves drought resistance and reduces irrigation frequency.
+        </p>
+        
+    </div>
+</li>
+                        <!-- SLIDE 2: Soil Enhancers -->
+                        <li id="carousel__slide2" tabindex="0" class="carousel__slide">
+    <div class="product-card border border-gray-200 rounded-xl p-6 shadow-xl hover:shadow-2xl transition bg-white text-left h-full flex flex-col">
+        
+        <div class="aspect-square bg-gray-100 mb-4 rounded-lg overflow-hidden flex items-center justify-center p-8">
+            <i class="fa-solid fa-trowel text-7xl text-[#BF6A00]"></i> 
+        </div>
+        
+        <h3 class="text-2xl font-extrabold mb-2 text-[#BF6A00] tracking-wide">Soil Enhancers</h3>
+        <p class="text-gray-700 leading-relaxed text-md flex-grow">
+            Our Soil Enhancers are additives that improve soil structure and quality. They work by loosening dense soil and improving drainage, creating a better root environment for boosting overall plant growth and yield.
+        </p>
+        
+    </div>
+</li>
+
+                        <!-- SLIDE 3: Seeds -->
+<li id="carousel__slide3" tabindex="0" class="carousel__slide">
+    <div class="product-card border border-gray-200 rounded-xl p-6 shadow-xl hover:shadow-2xl transition bg-white text-left h-full flex flex-col">
+        
+        <div class="aspect-square bg-gray-100 mb-4 rounded-lg overflow-hidden flex items-center justify-center p-8">
+            <i class="fa-solid fa-seedling text-7xl text-[#2E7D32]"></i> 
+        </div>
+        
+        <h3 class="text-2xl font-extrabold mb-2 text-[#2E7D32] tracking-wide">Premium Seeds</h3>
+        <p class="text-gray-700 leading-relaxed text-md flex-grow">
+            Our seeds offer you the widest selection for growing your own garden from scratch. Guaranteed for high germination rates and true-to-type varieties for a rewarding growing experience.
+        </p>
+        
+    </div>
+</li>
+                        
+                        <!-- SLIDE 4: Placeholder - Bio-Fertilizers -->
+  <li id="carousel__slide4" tabindex="0" class="carousel__slide">
+    <div class="product-card border border-gray-200 rounded-xl p-6 shadow-xl hover:shadow-2xl transition bg-white text-left h-full flex flex-col">
+        
+        <div class="aspect-square bg-gray-100 mb-4 rounded-lg overflow-hidden flex items-center justify-center p-8">
+            <i class="fa-solid fa-seedling text-7xl text-[#6A8EAE] animate-bounce-slow"></i> 
+        </div>
+        
+        <h3 class="text-2xl font-extrabold mb-2 text-[#6A8EAE] tracking-wide">Bio-Fertilizers</h3>
+        <p class="text-gray-700 leading-relaxed text-md flex-grow">
+            Complete **organic nutrition** derived from natural sources to boost soil microbiome health. Safe for the environment and highly effective in maximizing crop yield and quality.
+        </p>
+    </div>
+</li>
+                        <!-- SLIDE 5: Placeholder - Crop Protection -->
+   <li id="carousel__slide5" tabindex="0" class="carousel__slide">
+    <div class="product-card border border-gray-200 rounded-xl p-6 shadow-xl hover:shadow-2xl transition bg-white text-left h-full flex flex-col">
+        
+        <div class="aspect-square bg-gray-100 mb-4 rounded-lg overflow-hidden flex items-center justify-center p-8">
+            <i class="fa-solid fa-shield-halved text-7xl text-[#38761D]"></i> 
+        </div>
+        
+        <h3 class="text-2xl font-extrabold mb-2 text-[#38761D] tracking-wide">Natural Crop Protection</h3>
+        <p class="text-gray-700 leading-relaxed text-md flex-grow">
+            Non-toxic, **biodegradable solutions** for effective defense against common pests and plant diseases, ensuring your crops remain healthy without harmful chemicals.
+        </p>
+        
+    </div>
+</li>
+                        <!-- SLIDE 6: Placeholder - Irrigation Tools -->
+                       <li id="carousel__slide6" tabindex="0" class="carousel__slide">
+    <div class="product-card border border-gray-200 rounded-xl p-6 shadow-xl hover:shadow-2xl transition bg-white text-left h-full flex flex-col">
+        
+        <div class="aspect-square bg-gray-100 mb-4 rounded-lg overflow-hidden flex items-center justify-center p-8">
+            <i class="fa-solid fa-faucet-drip text-7xl text-[#3C8BEA]"></i>
+        </div>
+        
+        <h3 class="text-2xl font-extrabold mb-2 text-[#3C8BEA] tracking-wide">High-Efficiency Irrigation</h3>
+        <p class="text-gray-700 leading-relaxed text-md flex-grow">
+            Smart, **water-efficient drip and micro-sprinkler systems** that deliver precise hydration. Minimize water waste and maximize nutrient uptake for sustainable farming.
+        </p>
+        
+    </div>
+</li>
+                    <!-- Navigation Dots -->
+                    <aside class="carousel__navigation">
+                        <ol class="carousel__navigation-list">
+                            <li class="carousel__navigation-item"><a href="#carousel__slide1" class="carousel__navigation-button" aria-label="Go to slide 1">Slide 1</a></li>
+                            <li class="carousel__navigation-item"><a href="#carousel__slide2" class="carousel__navigation-button" aria-label="Go to slide 2">Slide 2</a></li>
+                            <li class="carousel__navigation-item"><a href="#carousel__slide3" class="carousel__navigation-button" aria-label="Go to slide 3">Slide 3</a></li>
+                            <li class="carousel__navigation-item"><a href="#carousel__slide4" class="carousel__navigation-button" aria-label="Go to slide 4">Slide 4</a></li>
+                            <li class="carousel__navigation-item"><a href="#carousel__slide5" class="carousel__navigation-button" aria-label="Go to slide 5">Slide 5</a></li>
+                            <li class="carousel__navigation-item"><a href="#carousel__slide6" class="carousel__navigation-button" aria-label="Go to slide 6">Slide 6</a></li>
+                        </ol>
+                    </aside>
+                </section>
+                <!-- CAROUSEL END -->
+        
+            </div>
+            </div>
+        </section>
+    </section>
+
+    <!-- Why Us Section (Mobile-friendly popovers remain here) -->
+    <section id="about" class="py-20 about-bg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Why Natugrow?</h2>
+                <div class="w-20 h-1 bg-primary mx-auto mb-6"></div>
+                <p class="text-lg text-gray-200">Experience the difference with our dedicated services and superior products.</p>
+            </div>
+
+            <!-- Items stack vertically on mobile (grid-cols-1) -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <!-- Why Item 1 -->
+                          <div class="flex flex-col items-center text-center relative z-0 hover:z-10 transition-all">
+                    <img src="https://images.unsplash.com/photo-1623750472626-88d718e2f4c4?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Item 6" class="w-full h-40 object-cover rounded-lg shadow-md mb-4" loading="lazy" decoding="async" width="400" height="160">
+                    <h3 class="text-lg font-bold mb-2 text-white drop-shadow-lg">Digital Agriculture & Decision Support</h3>
+                    <p class="text-gray-200 mb-3 text-xs leading-relaxed">We utilize technology to ensure product efficacy, provide precision application, and strengthen customer loyalty.</p>
+                    <!-- Button with Hover Pop-out -->
+                    <div class="relative group inline-block">
+                        <a href="#" class="text-primary font-semibold hover:text-secondary uppercase text-xs tracking-wide inline-flex items-center py-2 popover-trigger">
+                            More <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                        
+                        <!-- Pop-out Content -->
+                        <div class="popover-content absolute bottom-full left-1/2 mb-2 w-56 bg-white p-4 rounded-lg shadow-2xl border border-gray-100 z-50 text-left">
+                            <h4 class="font-bold text-gray-800 mb-2 text-xs border-b pb-2 border-gray-100">Digital Agriculture & Decision Support</h4>
+                            <p class="text-xs text-gray-600 leading-relaxed">We use straightforward information and modern methods to make sure you use our products at the exact right time for the best results, keeping it clear and easy.
+                             <div class="absolute top-full left-1/2 transform -translate-x-1/2 -mt-[1px]">
+                                <div class="border-solid border-t-white border-t-8 border-x-transparent border-x-8 border-b-0"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+                <!-- Why Item 2 -->
+     <div class="flex flex-col items-center text-center relative z-0 hover:z-10 transition-all">
+                    <img src="assets/img/reg.jpg" alt="Item 5" class="w-full h-40 object-cover rounded-lg shadow-md mb-4" loading="lazy" decoding="async" width="400" height="160">
+                    <h3 class="text-lg font-bold mb-2 text-white drop-shadow-lg">Regulatory & Quality Assurance Framework</h3>
+                    <p class="text-gray-200 mb-3 text-xs leading-relaxed">We uphold the highest standards of regulatory compliance and production quality (QA/QC) to guarantee product stability and credibility globally.</p> 
+                    <!-- Button with Hover Pop-out -->
+                    <div class="relative group inline-block">
+                        <a href="#" class="text-primary font-semibold hover:text-secondary uppercase text-xs tracking-wide inline-flex items-center py-2 popover-trigger">
+                            More <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                        
+                        <!-- Pop-out Content -->
+                        <div class="popover-content absolute bottom-full left-1/2 mb-2 w-56 bg-white p-4 rounded-lg shadow-2xl border border-gray-100 z-50 text-left">
+                            <h4 class="font-bold text-gray-800 mb-2 text-xs border-b pb-2 border-gray-100">Regulatory & Quality Assurance Framework</h4>
+                            <p class="text-xs text-gray-600 leading-relaxed">We guarantee that our products are honest, safe, and made to the highest standard so you always get what you pay for.</p>
+                             <!-- Arrow pointer -->
+                             <div class="absolute top-full left-1/2 transform -translate-x-1/2 -mt-[1px]">
+                                <div class="border-solid border-t-white border-t-8 border-x-transparent border-x-8 border-b-0"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+               
+                <!-- Why Item 3 -->
+
+  <div class="flex flex-col items-center text-center relative z-0 hover:z-10 transition-all">
+                    <img src="assets/img/er.webp" alt="Item 4" class="w-full h-40 object-cover rounded-lg shadow-md mb-4" loading="lazy" decoding="async" width="400" height="160">
+                    <h3 class="text-lg font-bold mb-2 text-white drop-shadow-lg">Soil Health & Regenerative Agriculture</h3>
+                    <p class="text-gray-200 mb-3 text-xs leading-relaxed">We are committed to regeneration practices that actively restore soil fertility, structure, and biological vitality for long-term health.</p>
+                    <!-- Button with Hover Pop-out -->
+                    <div class="relative group inline-block">
+                        <a href="#" class="text-primary font-semibold hover:text-secondary uppercase text-xs tracking-wide inline-flex items-center py-2 popover-trigger">
+                            Read More <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                        
+                        <!-- Pop-out Content -->
+                        <div class="popover-content absolute bottom-full left-1/2 mb-2 w-56 bg-white p-4 rounded-lg shadow-2xl border border-gray-100 z-50 text-left">
+                            <h4 class="font-bold text-gray-800 mb-2 text-xs border-b pb-2 border-gray-100">Soil Health & Regenerative Agriculture</h4>
+                            <p class="text-xs text-gray-600 leading-relaxed">We are committed to making the soil itself strong and rich, helping it grow better food year after year, just like a good community builds strong families.</p> <!-- Arrow pointer -->
+                             <div class="absolute top-full left-1/2 transform -translate-x-1/2 -mt-[1px]">
+                                <div class="border-solid border-t-white border-t-8 border-x-transparent border-x-8 border-b-0"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                
+
+            <!-- Second row: Three smaller cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+                <!-- Why Item 4 -->
+              
+<div class="flex flex-col items-center text-center relative z-0 hover:z-10 transition-all">
+                    <img src="https://images.unsplash.com/photo-1567471945805-069e09c11098?w=600&q=55&auto=format&fit=crop" alt="Community" class="w-full h-64 object-cover rounded-lg shadow-md mb-6" loading="lazy" decoding="async" width="600" height="256">
+                    <h3 class="text-xl font-bold mb-3 text-white drop-shadow-lg">Community Engagement</h3>
+                    <p class="text-gray-200 mb-4 text-sm leading-relaxed">We actively engage with local farming communities to understand their needs and challenges, allowing us to provide better solutions.</p>
+                    
+                    <!-- Button with Hover Pop-out -->
+                    <div class="relative group inline-block">
+                        <a href="#" class="text-primary font-semibold hover:text-secondary uppercase text-sm tracking-wide inline-flex items-center py-2 popover-trigger">
+                            Get Involved <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                        
+                        <!-- Pop-out Content -->
+                        <div class="popover-content absolute bottom-full left-1/2 mb-2 w-64 bg-white p-5 rounded-lg shadow-2xl border border-gray-100 z-50 text-left">
+                            <h4 class="font-bold text-gray-800 mb-2 text-sm border-b pb-2 border-gray-100">Local Impact</h4>
+                            <p class="text-xs text-gray-600 leading-relaxed">
+                                We host monthly workshops, sponsor local school garden projects, and provide free soil testing services. Our "Farmer First" program offers scholarships to children of partner farmers.
+                            </p>
+                             <!-- Arrow pointer -->
+                             <div class="absolute top-full left-1/2 transform -translate-x-1/2 -mt-[1px]">
+                                <div class="border-solid border-t-white border-t-8 border-x-transparent border-x-8 border-b-0"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+                <!-- Why Item 5 -->
+            <div class="flex flex-col items-center text-center relative z-0 hover:z-10 transition-all">
+                    <img src="https://plus.unsplash.com/premium_photo-1679428402040-e3c93439ec13?w=500&q=70&auto=format&fit=crop" alt="Sustainable" class="w-full h-64 object-cover rounded-lg shadow-md mb-6" loading="lazy" decoding="async" width="500" height="256">
+                    <h3 class="text-xl font-bold mb-3 text-white drop-shadow-lg">Sustainability & ESG</h3>
+                    <p class="text-gray-200 mb-4 text-sm leading-relaxed">We prioritize climate-positive solutions that reduce chemical dependence and enhance the responsible use of water and nutrients.</p>                    <!-- Button with Hover Pop-out -->
+                    <div class="relative group inline-block">
+                        <a href="#" class="text-primary font-semibold hover:text-secondary uppercase text-sm tracking-wide inline-flex items-center py-2 popover-trigger">
+                            Learn How <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                        
+                        <!-- Pop-out Content -->
+                        <div class="popover-content absolute bottom-full left-1/2 mb-2 w-64 bg-white p-5 rounded-lg shadow-2xl border border-gray-100 z-50 text-left">
+                            <h4 class="font-bold text-gray-800 mb-2 text-sm border-b pb-2 border-gray-100">Eco-First Production</h4>
+                            <p class="text-xs text-gray-600 leading-relaxed">
+                            We always protect the land, ensuring our solutions save water, reduce waste, and keep the soil healthy for the next harvest.</p>
+                             <!-- Arrow pointer -->
+                             <div class="absolute top-full left-1/2 transform -translate-x-1/2 -mt-[1px]">
+                                <div class="border-solid border-t-white border-t-8 border-x-transparent border-x-8 border-b-0"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Why Item 6 -->
+      <div class="flex flex-col items-center text-center relative z-0 hover:z-10 transition-all">
+                    <img src="https://images.unsplash.com/photo-1662355543219-b66790d5b167?w=500&q=70&auto=format&fit=crop" alt="Expertise" class="w-full h-64 object-cover rounded-lg shadow-md mb-6" loading="lazy" decoding="async" width="500" height="256">
+                    <h3 class="text-xl font-bold mb-3 text-white drop-shadow-lg">Innovation Platform</h3>
+                    <p class="text-gray-200 mb-4 text-sm leading-relaxed">We are dedicated to cutting-edge biological discovery, optimization, and scientific excellence to create unique, stable solutions.</p>
+                    
+                    <!-- Button with Hover Pop-out -->
+                    <div class="relative group inline-block">
+                        <a href="#" class="text-primary font-semibold hover:text-secondary uppercase text-sm tracking-wide inline-flex items-center py-2 popover-trigger">
+                            Discover More <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                        
+                        <!-- Pop-out Content -->
+                        <div class="popover-content absolute bottom-full left-1/2 mb-2 w-64 bg-white p-5 rounded-lg shadow-2xl border border-gray-100 z-50 text-left">
+                            <h4 class="font-bold text-gray-800 mb-2 text-sm border-b pb-2 border-gray-100">Innovation Platform</h4>
+                            <p class="text-xs text-gray-600 leading-relaxed">
+                            We use local knowledge and simple, clever techniques to discover and create products that work reliably, even when resources are scarce</p>
+                            <!-- Arrow pointer for the tooltip -->
+                            <div class="absolute top-full left-1/2 transform -translate-x-1/2 -mt-[1px]">
+                                <div class="border-solid border-t-white border-t-8 border-x-transparent border-x-8 border-b-0"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+        </div>
+    </section>
+
+    <!-- News / Blog Section -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Latest Insights and Updates</h2>
+                <div class="w-20 h-1 bg-primary mx-auto mb-6"></div>
+                <p class="text-lg text-gray-600">Stay informed with our latest news articles and developments in the agrochemical sector.</p>
+            </div>
+
+            <!-- Items stack vertically on mobile (grid-cols-1) -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- News Card 1 -->
+                <div class="bg-gray-50 p-8 rounded-xl border border-gray-100 hover:shadow-md transition">
+                    <div class="text-sm text-gray-400 mb-2" data-date="December 2, 2025">December 2, 2025</div>
+                    <h3 class="text-xl font-bold mb-3 text-gray-800" data-title="New Product Launch: Biopesticides">New Product Launch: Biopesticides</h3>
+                    <p class="text-gray-600 text-sm mb-4">We are excited to announce the launch of our new line of biopesticides, designed to provide...</p>
+                    <a href="#" class="text-primary font-bold text-sm uppercase read-more-btn"
+                        data-full-text="Our new Biopesticides line uses natural microbes and botanical extracts to target pests effectively without harming beneficial insects. This launch represents a major step towards 100% organic farming solutions. The product is certified organic and available for purchase immediately.">
+                        Read More
+                    </a>
+                </div>
+
+                <!-- News Card 2 -->
+                <div class="bg-gray-50 p-8 rounded-xl border border-gray-100 hover:shadow-md transition">
+                    <div class="text-sm text-gray-400 mb-2" data-date="November 15, 2025">November 15, 2025</div>
+                    <h3 class="text-xl font-bold mb-3 text-gray-800" data-title="Tips for Sustainable Agriculture">Tips for Sustainable Agriculture</h3>
+                    <p class="text-gray-600 text-sm mb-4">In this blog post, we share practical tips for farmers looking to adopt more sustainable...</p>
+                    <a href="#" class="text-primary font-bold text-sm uppercase read-more-btn"
+                        data-full-text="Learn practical steps for reducing water consumption, optimizing fertilizer usage, and implementing crop rotation. Adopting these tips can drastically improve farm productivity and soil health while ensuring compliance with new environmental regulations.">
+                        Read More
+                    </a>
+                </div>
+
+                <!-- News Card 3 -->
+                <div class="bg-gray-50 p-8 rounded-xl border border-gray-100 hover:shadow-md transition">
+                    <div class="text-sm text-gray-400 mb-2" data-date="October 28, 2025">October 28, 2025</div>
+                    <h3 class="text-xl font-bold mb-3 text-gray-800" data-title="The Future of Sustainable Farming">The Future of Sustainable Farming</h3>
+                    <p class="text-gray-600 text-sm mb-4">As the demand for sustainable farming practices grows, we explore the advancements in...</p>
+                    <a href="#" class="text-primary font-bold text-sm uppercase read-more-btn"
+                        data-full-text="We discuss upcoming trends, including AI-driven precision agriculture, vertical farming solutions, and the critical role of biotech in feeding a growing global population sustainably. Natugrow is investing heavily in these areas to lead the change.">
+                        Read More
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer (Contact Us) Section -->
+    <footer id="contact" class="bg-dark text-white pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Footer columns stack vertically on mobile (grid-cols-1) -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10 border-b border-gray-700 pb-10 mb-8">
+                <!-- Company Info -->
+                <div class="space-y-4">
+                    <h4 class="text-xl font-bold text-primary">Natugrow Biosciences</h4>
+                    <p class="text-sm text-gray-400">Pioneering sustainable agrochemical solutions in East Africa. Committed to farmer success and environmental stewardship.</p>
+                    <div class="flex space-x-4 text-lg">
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="text-lg font-bold mb-5">Quick Links</h4>
+                    <ul class="space-y-3 text-sm">
+                        <li><a href="#products" class="text-gray-400 hover:text-white transition">Our Products</a></li>
+                        <li><a href="#services" class="text-gray-400 hover:text-white transition">Farm Services</a></li>
+                        <li><a href="#about" class="text-gray-400 hover:text-white transition">About Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Careers</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact Info -->
+                <div>
+                    <h4 class="text-lg font-bold mb-5">Contact Us</h4>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-start">
+                            <i class="fas fa-map-marker-alt text-primary mt-1 mr-3"></i>
+                            <span class="text-gray-400">Karen, Nairobi, Kenya</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-envelope text-primary mt-1 mr-3"></i>
+                            <span class="text-gray-400">info@natugrow.co.ke</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-phone-alt text-primary mt-1 mr-3"></i>
+                            <span class="text-gray-400">+254 712 345 678</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Copyright -->
+            <div class="text-center text-sm text-gray-500">
+                &copy; 2025 Natugrow Biosciences. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- 1. Full Screen News Modal Structure (Reused for News Articles) -->
+    <div id="news-modal" class="full-screen-modal fixed inset-0 z-[100] items-center justify-center bg-dark bg-opacity-70 p-4 transition-opacity duration-300" onclick="closeNewsModal(event)">
+        
+        <!-- Modal Content Container -->
+        <div class="modal-content-animated bg-white w-full max-w-4xl max-h-[90vh] rounded-xl shadow-2xl overflow-y-auto relative p-6 md:p-10" onclick="event.stopPropagation()">
+            
+            <!-- Close Button -->
+            <button class="absolute top-4 right-4 text-gray-500 hover:text-dark transition text-2xl" onclick="closeNewsModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <!-- Modal Header (Title and Date) -->
+            <div class="border-b pb-4 mb-6">
+                <p id="modal-date" class="text-sm text-gray-500 font-medium mb-1"></p>
+                <h2 id="modal-title" class="text-3xl font-bold text-gray-900"></h2>
+            </div>
+
+            <!-- Modal Body (Full Article Text) -->
+            <p id="modal-full-text" class="text-lg text-gray-700 leading-relaxed"></p>
+            
+        </div>
+    </div>
+    <!-- End of News Modal Structure -->
+
+    <!-- 2. Full Screen Inquiry Modal Structure (New Form Popup) -->
+    <div id="inquiry-modal" class="full-screen-modal fixed inset-0 z-[100] items-center justify-center bg-dark bg-opacity-70 p-4 transition-opacity duration-300" onclick="closeInquiryModal(event)">
+        <div class="modal-content-animated bg-white w-full max-w-2xl max-h-[90vh] rounded-xl shadow-2xl overflow-y-auto relative p-6 md:p-10 text-gray-800" onclick="event.stopPropagation()">
+            
+             <!-- Close Button -->
+            <button class="absolute top-4 right-4 text-gray-500 hover:text-dark transition text-2xl" onclick="closeInquiryModal()">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Inquire Now</h2>
+            <p class="text-gray-600 mb-6 border-b pb-4">Fill out the form below and we'll get back to you within one business day.</p>
+
+            <!-- The Inquiry Form -->
+            <form id="inquiry-form" onsubmit="handleInquirySubmit(event)" method="POST" action="https://formspree.io/f/xanrdake" class="flex flex-col gap-4">
+                
+                <!-- Name and Email -->
+                <input type="text" id="inquiry-name" name="name" placeholder="Your Name" class="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary bg-gray-50" required>
+                <input type="email" id="inquiry-email" name="email" placeholder="Your Email Address" class="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary bg-gray-50" required>
+                
+                <!-- Subject / Product Interest -->
+                <select name="subject" class="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary bg-gray-50 text-gray-600" required>
+                    <option value="" disabled selected>I am interested in...</option>
+                    <option value="Biopesticides">Biopesticides</option>
+                    <option value="Soil Enhancers">Soil Enhancers</option>
+                    <option value="Organic Fertilizer">Organic Fertilizer</option>
+                    <option value="General Inquiry">General Inquiry / Other</option>
+                </select>
+
+                <!-- Inquiry Message Field -->
+                <textarea id="inquiry-message" name="message" rows="5" placeholder="Please describe your farm size and specific needs so we can assist you better..." class="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary bg-gray-50" required></textarea>
+
+                <!-- CAPTCHA Field -->
+                <div class="flex items-center bg-gray-50 rounded border border-gray-300 px-4 py-3">
+                    <label for="captcha-input" id="captcha-question" class="font-medium text-sm text-gray-600 mr-4 whitespace-nowrap">What is 5 + 3?</label>
+                    <input type="number" id="captcha-input" placeholder="Answer" class="flex-grow bg-transparent focus:outline-none text-gray-800" required aria-label="Captcha Answer">
+                </div>
+
+                <!-- Error Message -->
+                <p id="captcha-error" class="text-red-500 font-medium text-sm hidden"></p>
+
+                <!-- Submit Button -->
+                <div class="flex justify-center mt-4">
+                    <button type="submit" id="submit-button" class="w-full px-6 py-3 bg-primary text-white font-bold rounded hover:bg-secondary transition btn-hover uppercase tracking-wider text-base shadow-lg">
+                        Send Inquiry
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+    <!-- End of Inquiry Modal Structure -->
+
+    <script defer src="assets/js/main.min.js"></script>
+</body>
+</html>
